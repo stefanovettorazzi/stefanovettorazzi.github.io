@@ -1,0 +1,64 @@
+name: Convert Images to WebP
+
+on:
+  push:
+    paths:
+      - 'images/**/*.{jpg,jpeg,png}'
+
+jobs:
+  convert-images:
+    runs-name: "Convert Images to WebP"
+    runs-on: ubuntu-latest
+    
+    # Needs permission to push the converted files back to the repository
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup WebP tools
+        run: sudo apt-get install -y webp
+
+      - name: Convert images
+        run: |
+          # Create arrays to track processing
+          converted=0
+          
+          # Find all jpg, jpeg, and png files in the images folder
+          find images -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \) | while read origin_file; do
+            
+            # Determine the new filename by replacing the extension with .webp
+            filename=$(basename -- "$origin_file")
+            extension="${filename##*.}"
+            filename="${filename%.*}"
+            dir=$(dirname "$origin_file")
+            target_file="$dir/$filename.webp"
+            
+            # Only convert if the WebP version doesn't already exist
+            if [ ! -f "$target_file" ]; then
+              echo "Converting $origin_file to WebP..."
+              cwebp -q 85 -preset photo "$origin_file" -o "$target_file"
+              converted=1
+              
+              # Optional: You can uncomment the line below to delete the original file automatically
+              # rm "$origin_file"
+            fi
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Stage all newly created .webp files
+          git add images/**/*.webp || true
+          
+          # Check if there's actually anything to commit
+          if git diff --staged --quiet; then
+            echo "No new images were converted."
+          else
+            git commit -m "chore: auto-convert original images to WebP"
+            git push
+          fi
