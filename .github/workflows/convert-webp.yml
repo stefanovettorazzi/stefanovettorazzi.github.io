@@ -54,8 +54,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # Stage all newly created .webp files
-          git add images/**/*.webp || true
+          # Stage all newly created .webp files using find to avoid glob issues
+          find images -name '*.webp' -exec git add {} + || true
           
           # Check if there's actually anything to commit
           if git diff --staged --quiet; then
