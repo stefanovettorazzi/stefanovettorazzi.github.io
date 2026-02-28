@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# Local Web Servers & Python
+__pycache__/
+*.py[cod]
+.Python
+
+# Temporary/Dummy files created during fetching scripts
+dummy
+search_l
+
+# General ignores
+*.log
