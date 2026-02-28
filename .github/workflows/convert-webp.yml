@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'images/**/*.{jpg,jpeg,png}'
+  workflow_dispatch: # Allows manual triggering
+
 
 jobs:
   convert-images:
