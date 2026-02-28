@@ -1,5 +1,184 @@
 <!DOCTYPE html>
-<html>
-  <body>
-  </body>
+<html lang="es-UY">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stefano Vettorazzi</title>
+    
+    <!-- Link to our stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Link to FontAwesome for Icons (Spotify, Apple, YouTube, etc.) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Link to Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main id="app-content">
+        <!-- Content will be injected here by Javascript -->
+    </main>
+
+    <script id="site-data" type="application/json">
+{
+    "artist": {
+        "name": "STEFANO VETTORAZZI",
+        "socials": {
+            "instagram": "https://instagram.com/stefano_vettorazzi",
+            "tiktok": "https://tiktok.com/@stefanovettorazzi",
+            "x-twitter": "https://x.com/stefanovetorazi",
+            "youtube": "https://youtube.com/@stefanovettorazzi"
+        }
+    },
+    "releases": [
+        {
+            "title": "La vida no me va a alcanzar",
+            "artwork": "https://via.placeholder.com/600x600/333333/ffffff?text=Latest+Artwork",
+            "links": {
+                "spotify": "https://open.spotify.com/track/7IOFqT02aOcH1XVoIu5oWS?si=e2a6d6771ae74f2a",
+                "apple": "https://music.apple.com/song/la-vida-no-me-va-a-alcanzar/1879342374",
+                "youtube": "https://www.youtube.com/watch?v=YOw_p-8D4sw"
+            }
+        },
+        {
+            "title": "Sencillo Anterior 2",
+            "artwork": "https://via.placeholder.com/400x400/333333/ffffff?text=Sencillo+2",
+            "links": {
+                "spotify": "https://open.spotify.com/...",
+                "apple": "https://music.apple.com/...",
+                "youtube": "https://youtube.com/..."
+            }
+        },
+        {
+            "title": "Sencillo Anterior 1",
+            "artwork": "https://via.placeholder.com/400x400/333333/ffffff?text=Sencillo+1",
+            "links": {
+                "spotify": "https://open.spotify.com/...",
+                "apple": "https://music.apple.com/...",
+                "youtube": "https://youtube.com/..."
+            }
+        }
+    ]
+}
+    </script>
+
+    <script>
+        // Set up the platform details so you only have to provide the URLs in the JSON above
+        const platformConfig = {
+            spotify: { text: "Escuchar en Spotify", icon: "fa-spotify", className: "btn spotify" },
+            apple: { text: "Escuchar en Apple Music", icon: "fa-apple", className: "btn apple" },
+            youtube: { text: "Ver en YouTube", icon: "fa-youtube", className: "btn youtube" }
+        };
+
+        const socialConfig = {
+            instagram: { title: "Instagram", icon: "fa-instagram" },
+            tiktok: { title: "TikTok", icon: "fa-tiktok" },
+            "x-twitter": { title: "X (Twitter)", icon: "fa-x-twitter" },
+            youtube: { title: "YouTube", icon: "fa-youtube" }
+        };
+
+        // Read data directly from the embedded script tag
+        try {
+            const dataElement = document.getElementById('site-data');
+            const data = JSON.parse(dataElement.textContent);
+            
+            const app = document.getElementById('app-content');
+            let html = '';
+
+            // 1. Build Latest Release (assuming the first item in the releases array is the latest)
+                if (data.releases && data.releases.length > 0) {
+                    const latest = data.releases[0];
+                    let latestLinksHtml = '';
+                    
+                    if (latest.links) {
+                        for (const [platform, url] of Object.entries(latest.links)) {
+                            if (platformConfig[platform]) {
+                                const p = platformConfig[platform];
+                                latestLinksHtml += `<a href="${url}" target="_blank" class="${p.className}"><i class="fa-brands ${p.icon}"></i> ${p.text}</a>`;
+                            }
+                        }
+                    }
+
+                    html += `
+                        <section class="latest-release">
+                            <div class="release-container">
+                                <div class="artwork">
+                                    <img src="${latest.artwork}" alt="${latest.title}">
+                                </div>
+                                <div class="release-info">
+                                    <h2>${latest.title}</h2>
+                                    <p class="release-date">Última canción</p>
+                                    <div class="listen-links">
+                                        ${latestLinksHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+
+                // 2. Build Artist Header
+                let socialsHtml = '';
+                if (data.artist.socials) {
+                    for (const [platform, url] of Object.entries(data.artist.socials)) {
+                        if (socialConfig[platform]) {
+                            const s = socialConfig[platform];
+                            socialsHtml += `<a href="${url}" target="_blank" title="${s.title}"><i class="fa-brands ${s.icon}"></i></a>`;
+                        }
+                    }
+                }
+
+                html += `
+                    <header class="artist-header">
+                        <h1>${data.artist.name}</h1>
+                        <div class="social-links">
+                            ${socialsHtml}
+                        </div>
+                    </header>
+                `;
+
+                // 3. Build Previous Releases Grid
+                if (data.releases && data.releases.length > 1) {
+                    let previousReleasesHtml = '';
+                    for (let i = 1; i < data.releases.length; i++) {
+                        const rel = data.releases[i];
+                        let relLinksHtml = '';
+                        
+                        if (rel.links) {
+                            for (const [platform, url] of Object.entries(rel.links)) {
+                                if (platformConfig[platform]) {
+                                    const p = platformConfig[platform];
+                                    relLinksHtml += `<a href="${url}" target="_blank" class="icon-link"><i class="fa-brands ${p.icon}"></i></a>`;
+                                }
+                            }
+                        }
+
+                        previousReleasesHtml += `
+                            <div class="release-card">
+                                <img src="${rel.artwork}" alt="${rel.title}">
+                                <h3>${rel.title}</h3>
+                                <div class="listen-links-small">
+                                    ${relLinksHtml}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    html += `
+                        <section class="previous-releases">
+                            <div class="releases-grid">
+                                ${previousReleasesHtml}
+                            </div>
+                        </section>
+                    `;
+            }
+
+            // Inject the generated HTML into the main container
+            app.innerHTML = html;
+        } catch (error) {
+            console.error('Error loading the site data:', error);
+            document.getElementById('app-content').innerHTML = '<p style="text-align:center; padding: 2rem;">Error al cargar el contenido. Por favor, inténtalo de nuevo.</p>';
+        }
+    </script>
+</body>
 </html>
