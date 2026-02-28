@@ -7,7 +7,7 @@ on:
 
 jobs:
   convert-images:
-    runs-name: "Convert Images to WebP"
+    name: "Convert Images to WebP"
     runs-on: ubuntu-latest
     
     # Needs permission to push the converted files back to the repository
