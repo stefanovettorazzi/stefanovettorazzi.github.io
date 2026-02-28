@@ -44,8 +44,8 @@ jobs:
               cwebp -q 85 -preset photo "$origin_file" -o "$target_file"
               converted=1
               
-              # Optional: You can uncomment the line below to delete the original file automatically
-              # rm "$origin_file"
+              # Delete the original file automatically
+              rm "$origin_file"
             fi
           done
 
@@ -54,8 +54,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # Stage all newly created .webp files using find to avoid glob issues
-          find images -name '*.webp' -exec git add {} + || true
+          # Stage all newly created .webp files and record deletions of original files
+          git add -A images/
           
           # Check if there's actually anything to commit
           if git diff --staged --quiet; then
