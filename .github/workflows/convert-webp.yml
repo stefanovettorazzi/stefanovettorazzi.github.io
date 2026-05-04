@@ -3,7 +3,9 @@ name: Convert Images to WebP
 on:
   push:
     paths:
-      - 'images/**/*.{jpg,jpeg,png}'
+      - 'images/**/*.jpg'
+      - 'images/**/*.jpeg'
+      - 'images/**/*.png'
   workflow_dispatch: # Allows manual triggering
 
 
