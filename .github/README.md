@@ -1,8 +1,8 @@
-# Stefano Vettorazzi - Artist Website
+# Website
 
-This is the repository for my personal artist website. The site is a single-page application built with HTML, CSS, and Vanilla JavaScript. 
+This is the repository for my website. The site is a single-page application built with HTML, CSS, and Vanilla JavaScript. 
 
-## How to Add a New Release
+## How to Add a Song
 
 To add a new song or album to the website, follow these simple steps to ensure it shows up at the top:
 
