@@ -43,7 +43,9 @@ jobs:
             # Only convert if the WebP version doesn't already exist
             if [ ! -f "$target_file" ]; then
               echo "Converting $origin_file to WebP..."
-              cwebp -q 85 -preset photo "$origin_file" -o "$target_file"
+              # Square song artwork is always larger than 1000px; cap the width
+              # (height follows the aspect ratio via the 0).
+              cwebp -q 85 -preset photo -resize 1000 0 "$origin_file" -o "$target_file"
               converted=1
               
               # Delete the original file automatically
